@@ -1,0 +1,1522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Emma's Math Adventure+ 🌟</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Emma Math">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#c77dff">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sky: #a8edea;
+    --pink: #ff6b9d;
+    --yellow: #ffd93d;
+    --purple: #c77dff;
+    --green: #6bcb77;
+    --blue: #4d96ff;
+    --coral: #ff6b6b;
+    --white: #ffffff;
+    --bg: #f0f8ff;
+    --dark: #2d3561;
+    --card: #ffffff;
+    --shadow: 0 8px 32px rgba(100,80,200,0.13);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: linear-gradient(135deg, #e0f7fa 0%, #f3e5f5 50%, #fff9e6 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+    color: var(--dark);
+  }
+
+  .star {
+    position: fixed;
+    pointer-events: none;
+    font-size: 1.5rem;
+    animation: float 6s ease-in-out infinite;
+    opacity: 0.4;
+    z-index: 0;
+  }
+  @keyframes float {
+    0%,100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(20deg); }
+  }
+
+  header {
+    background: linear-gradient(90deg, #c77dff, #ff6b9d, #ff9a3c);
+    padding: 18px 24px 20px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(199,125,255,0.3);
+  }
+  header h1 {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(1.8rem, 5vw, 3rem);
+    color: white;
+    text-shadow: 3px 3px 0px rgba(0,0,0,0.15);
+    letter-spacing: 1px;
+  }
+  .subhead {
+    color: rgba(255,255,255,0.95);
+    font-weight: 800;
+    margin-top: 6px;
+    font-size: 1rem;
+  }
+  .score-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px 18px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+  .score-chip {
+    background: rgba(255,255,255,0.25);
+    border-radius: 50px;
+    padding: 7px 18px;
+    color: white;
+    font-size: 0.98rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 24px 16px 60px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .top-panel {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+  .panel {
+    background: rgba(255,255,255,0.86);
+    backdrop-filter: blur(6px);
+    border-radius: 22px;
+    padding: 16px 18px;
+    box-shadow: 0 6px 22px rgba(0,0,0,0.08);
+  }
+  .panel h3 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.1rem;
+    color: var(--purple);
+    margin-bottom: 10px;
+  }
+  .story-line {
+    font-weight: 800;
+    line-height: 1.5;
+  }
+  .story-small {
+    margin-top: 6px;
+    color: #6a6f8f;
+    font-size: 0.92rem;
+    font-weight: 700;
+  }
+  .settings-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .mini-btn {
+    border: 2px solid #e5d8ff;
+    background: white;
+    color: var(--dark);
+    border-radius: 14px;
+    padding: 10px 12px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all .18s ease;
+  }
+  .mini-btn:hover { transform: translateY(-2px); border-color: var(--purple); }
+  .mini-btn.active {
+    background: linear-gradient(135deg, #f3e5f5, #e8f4fd);
+    border-color: var(--purple);
+  }
+
+  .progress-wrap {
+    width: 100%;
+    background: #ede7f6;
+    border-radius: 50px;
+    height: 14px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--purple), var(--pink));
+    border-radius: 50px;
+    transition: width 0.5s ease;
+  }
+
+  .mode-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+  .mode-btn {
+    background: white;
+    border: 3px solid transparent;
+    border-radius: 20px;
+    padding: 14px 10px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.22s cubic-bezier(.34,1.56,.64,1);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    font-family: 'Nunito', sans-serif;
+  }
+  .mode-btn:hover { transform: translateY(-4px) scale(1.04); }
+  .mode-btn.active {
+    border-color: var(--purple);
+    background: linear-gradient(135deg, #f3e5f5, #e8f4fd);
+    transform: translateY(-4px) scale(1.04);
+    box-shadow: 0 8px 24px rgba(199,125,255,0.25);
+  }
+  .mode-icon { font-size: 2rem; display:block; margin-bottom:6px; }
+  .mode-label { font-size: .82rem; font-weight: 800; }
+
+  .game-card {
+    background: white;
+    border-radius: 28px;
+    padding: 32px 28px;
+    box-shadow: var(--shadow);
+    min-height: 390px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    animation: slideIn 0.35s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(30px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .game-card::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f3e5f5, #e8f4fd);
+    opacity: 0.55;
+  }
+
+  .question-label {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--purple);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+  .question-text {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(1.35rem, 4vw, 2rem);
+    color: var(--dark);
+    text-align: center;
+    margin-bottom: 18px;
+    line-height: 1.4;
+  }
+
+  .speak-btn {
+    border: none;
+    background: linear-gradient(135deg, var(--blue), #7bb0ff);
+    color: white;
+    border-radius: 999px;
+    padding: 10px 16px;
+    font-weight: 800;
+    cursor: pointer;
+    margin-bottom: 18px;
+    box-shadow: 0 6px 18px rgba(77,150,255,0.28);
+  }
+
+  .column-sum {
+    background: linear-gradient(135deg, #fdf6ff, #f0f8ff);
+    border-radius: 18px;
+    padding: 22px 32px;
+    display: inline-block;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 16px rgba(199,125,255,0.12);
+    min-width: 220px;
+  }
+  .col-row {
+    display: flex;
+    gap: 4px;
+    justify-content: flex-end;
+    align-items: center;
+    font-family: 'Fredoka One', cursive;
+    font-size: 2.2rem;
+    color: var(--dark);
+    line-height: 1.3;
+  }
+  .col-row.operator-row { color: var(--pink); }
+  .col-divider {
+    border: none;
+    border-top: 3px solid var(--dark);
+    margin: 6px 0;
+  }
+  .col-digit { width: 48px; text-align: center; }
+  .col-header {
+    display: flex;
+    gap: 4px;
+    justify-content: flex-end;
+    margin-bottom: 4px;
+  }
+  .col-header span {
+    width: 48px;
+    text-align: center;
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--purple);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    width: 100%;
+    max-width: 420px;
+  }
+  .option-btn {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.45rem;
+    color: var(--dark);
+    background: white;
+    border: 3px solid #e0d7ff;
+    border-radius: 16px;
+    padding: 14px 10px;
+    cursor: pointer;
+    transition: all 0.18s cubic-bezier(.34,1.56,.64,1);
+    text-align: center;
+  }
+  .option-btn:hover { background: #f3e5f5; transform: scale(1.06); border-color: var(--purple); }
+  .option-btn.correct { background: #d4f5de; border-color: var(--green); color: #1e8a47; transform: scale(1.08); }
+  .option-btn.wrong { background: #fde8e8; border-color: var(--coral); color: var(--coral); animation: shake 0.4s; }
+
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+  }
+
+  .action-btn {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.2rem;
+    color: white;
+    background: linear-gradient(135deg, var(--purple), var(--pink));
+    border: none;
+    border-radius: 50px;
+    padding: 14px 36px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 6px 20px rgba(199,125,255,0.35);
+    margin-top: 8px;
+  }
+  .action-btn:hover { transform: translateY(-3px) scale(1.05); }
+  .action-btn.green { background: linear-gradient(135deg, var(--green), #36c2a0); }
+
+  .feedback {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.4rem;
+    text-align: center;
+    padding: 12px 20px;
+    border-radius: 16px;
+    margin-top: 12px;
+    animation: popIn 0.3s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes popIn {
+    from { transform: scale(0.7); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .feedback.correct { background: #d4f5de; color: #1e8a47; }
+  .feedback.wrong { background: #fde8e8; color: #c0392b; }
+
+  .streak {
+    position: fixed;
+    top: 98px; right: 16px;
+    background: linear-gradient(135deg, var(--yellow), #ff9a3c);
+    color: white;
+    border-radius: 50px;
+    padding: 8px 16px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1rem;
+    box-shadow: 0 4px 16px rgba(255,154,60,0.35);
+    z-index: 100;
+    transition: all 0.3s;
+  }
+
+  .pattern-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  .pattern-num {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.3rem;
+    color: var(--dark);
+    background: #f3e5f5;
+    border-radius: 10px;
+    padding: 8px 14px;
+    min-width: 56px;
+    text-align: center;
+  }
+  .pattern-blank {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.35rem;
+    text-align: center;
+    border: 3px solid var(--purple);
+    border-radius: 10px;
+    padding: 6px 10px;
+    width: 78px;
+    outline: none;
+    color: var(--dark);
+    background: white;
+    -moz-appearance: textfield;
+  }
+  .pattern-blank::-webkit-outer-spin-button,
+  .pattern-blank::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+  .compare-row {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 2.4rem;
+    color: var(--dark);
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .compare-btns { display:flex; gap:12px; }
+  .compare-opt {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2rem;
+    width: 64px; height: 64px;
+    border: 3px solid #e0d7ff;
+    border-radius: 16px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.18s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .compare-opt:hover { background: #f3e5f5; border-color: var(--purple); transform: scale(1.1); }
+  .compare-opt.correct { background: #d4f5de; border-color: var(--green); }
+  .compare-opt.wrong { background: #fde8e8; border-color: var(--coral); animation: shake 0.4s; }
+
+  .tap-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 16px;
+  }
+  .tap-num {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.45rem;
+    padding: 14px 8px;
+    border-radius: 14px;
+    border: 3px solid #e0d7ff;
+    background: white;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.18s cubic-bezier(.34,1.56,.64,1);
+    color: var(--dark);
+  }
+  .tap-num:hover { transform: scale(1.07); }
+  .tap-num.selected { background: #f3e5f5; border-color: var(--purple); }
+  .tap-num.correct-selected { background: #d4f5de; border-color: var(--green); color: #1e8a47; }
+  .tap-num.wrong-selected { background: #fde8e8; border-color: var(--coral); color: var(--coral); }
+
+  .word-box {
+    background: linear-gradient(135deg, #fff9e6, #fff0fa);
+    border-left: 5px solid var(--yellow);
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-bottom: 20px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--dark);
+    text-align: left;
+    line-height: 1.7;
+    width: 100%;
+    max-width: 500px;
+  }
+
+  .boss-chip {
+    background: linear-gradient(135deg, #ff8b8b, #ff6b9d);
+    color: white;
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-weight: 800;
+    box-shadow: 0 6px 18px rgba(255,107,157,0.3);
+    margin-bottom: 14px;
+  }
+
+  .end-screen { text-align: center; }
+  .end-screen h2 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2.4rem;
+    color: var(--purple);
+    margin-bottom: 12px;
+  }
+  .end-screen p {
+    font-size: 1.08rem;
+    color: var(--dark);
+    margin-bottom: 14px;
+    font-weight: 700;
+    line-height: 1.65;
+  }
+  .big-star { font-size: 5rem; display:block; margin:16px auto; animation:spin 2s linear infinite; }
+  .stars-row { font-size: 2rem; letter-spacing: 4px; margin: 8px 0 12px; }
+  @keyframes spin {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.18); }
+    100% { transform: rotate(360deg) scale(1); }
+  }
+
+  .confetti-piece {
+    position: fixed;
+    width: 10px; height: 14px;
+    top: -20px;
+    border-radius: 2px;
+    animation: confettiFall linear forwards;
+    z-index: 1000;
+    pointer-events: none;
+  }
+  @keyframes confettiFall {
+    to { top: 110vh; transform: rotate(720deg) translateX(100px); }
+  }
+
+  .footer-note {
+    text-align: center;
+    margin-top: 14px;
+    color: #6c7396;
+    font-weight: 700;
+    font-size: .93rem;
+  }
+
+  @media (max-width: 720px) {
+    .top-panel { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 480px) {
+    .game-card { padding: 24px 16px; min-height: 360px; }
+    .column-sum { padding: 16px 18px; min-width: 190px; }
+    .col-digit { width: 38px; }
+    .col-row { font-size: 1.8rem; }
+    .options-grid { grid-template-columns: 1fr 1fr; }
+    .tap-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="star" style="top:8%;left:5%;animation-delay:0s">⭐</div>
+<div class="star" style="top:15%;right:8%;animation-delay:1s">🌸</div>
+<div class="star" style="top:55%;left:3%;animation-delay:2s">✨</div>
+<div class="star" style="top:70%;right:4%;animation-delay:0.5s">🦋</div>
+<div class="star" style="top:85%;left:8%;animation-delay:1.5s">🌟</div>
+
+<header>
+  <h1>🌈 Emma's Math Adventure+ 🌈</h1>
+  <div class="subhead">Help Emma the Math Bunny save Number Galaxy!</div>
+  <div class="score-bar">
+    <div class="score-chip">⭐ Score: <span id="scoreDisplay">0</span></div>
+    <div class="score-chip">🔥 <span id="qNumDisplay">Q 1</span> of 10</div>
+    <div class="score-chip">❤️ Lives: <span id="livesDisplay">3</span></div>
+    <div class="score-chip">🏆 Best: <span id="bestScoreDisplay">0</span></div>
+    <div class="score-chip">🪙 Coins: <span id="coinDisplay">0</span></div>
+  </div>
+</header>
+
+<div class="streak" id="streakBadge" style="display:none">🔥 Streak: <span id="streakCount">0</span></div>
+
+<main>
+  <div class="top-panel">
+    <div class="panel">
+      <h3>🐰 Emma's Mission</h3>
+      <div class="story-line" id="storyLine">Level 1: Counting Forest — answer math questions to collect stars and unlock the boss challenge!</div>
+      <div class="story-small" id="levelHint">Get 8 stars or more for a gold finish.</div>
+    </div>
+    <div class="panel">
+      <h3>⚙️ Game Settings</h3>
+      <div style="font-weight:800;margin-bottom:6px;">Difficulty</div>
+      <div class="settings-row" id="difficultyRow">
+        <button class="mini-btn active" data-difficulty="easy">Easy</button>
+        <button class="mini-btn" data-difficulty="normal">Normal</button>
+        <button class="mini-btn" data-difficulty="hard">Hard</button>
+      </div>
+      <div style="font-weight:800;margin:12px 0 6px;">Tools</div>
+      <div class="settings-row">
+        <button class="mini-btn active" id="soundToggle">🔊 Sound On</button>
+        <button class="mini-btn active" id="voiceToggle">🗣️ Voice On</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-fill" id="progressFill" style="width:0%"></div>
+  </div>
+
+  <div class="mode-grid" id="modeGrid">
+    <button class="mode-btn active" data-mode="addition">
+      <span class="mode-icon">➕</span><span class="mode-label">Addition</span>
+    </button>
+    <button class="mode-btn" data-mode="subtraction">
+      <span class="mode-icon">➖</span><span class="mode-label">Subtraction</span>
+    </button>
+    <button class="mode-btn" data-mode="compare">
+      <span class="mode-icon">⚖️</span><span class="mode-label">Compare</span>
+    </button>
+    <button class="mode-btn" data-mode="patterns">
+      <span class="mode-icon">🔢</span><span class="mode-label">Patterns</span>
+    </button>
+    <button class="mode-btn" data-mode="evenodd">
+      <span class="mode-icon">🔵</span><span class="mode-label">Even/Odd</span>
+    </button>
+    <button class="mode-btn" data-mode="wordproblem">
+      <span class="mode-icon">📖</span><span class="mode-label">Word Problem</span>
+    </button>
+    <button class="mode-btn" data-mode="length">
+      <span class="mode-icon">📏</span><span class="mode-label">Length</span>
+    </button>
+    <button class="mode-btn" data-mode="mixed">
+      <span class="mode-icon">🎲</span><span class="mode-label">Mix it Up!</span>
+    </button>
+  </div>
+
+  <div class="game-card" id="gameCard"></div>
+  <div class="footer-note">Tip for Dad: open this file in Chrome or Safari for speech and sound effects.</div>
+</main>
+
+<script>
+let mode = 'addition';
+let difficulty = 'easy';
+let score = 0;
+let qNum = 0;
+let streak = 0;
+let lives = 3;
+let coins = 0;
+let totalQ = 10;
+let answered = false;
+let currentQuestion = null;
+let bestScore = parseInt(localStorage.getItem('emmaBestScore') || '0', 10);
+let bestCoins = parseInt(localStorage.getItem('emmaCoins') || '0', 10);
+let soundOn = localStorage.getItem('emmaSound') !== 'off';
+let voiceOn = localStorage.getItem('emmaVoice') !== 'off';
+let adaptiveMistakes = JSON.parse(localStorage.getItem('emmaMistakes') || '{"addition":0,"subtraction":0,"compare":0,"patterns":0,"evenodd":0,"wordproblem":0,"length":0}');
+let bossRound = false;
+
+const storyMap = {
+  easy: { title: 'Level 1: Counting Forest', hint: 'Warm up with friendly numbers.' },
+  normal: { title: 'Level 2: Pattern Castle', hint: 'A little trickier — stay sharp!' },
+  hard: { title: 'Level 3: Number Galaxy', hint: 'Big numbers and boss battles await.' }
+};
+
+const wordProblemsBase = [
+  { q: "There are 235 buttons in Box A and 121 buttons in Box B. How many buttons are there altogether?", answer: 356 },
+  { q: "Mr Sim sold 631 cups of juice in January. He sold 283 fewer cups in February. How many cups did he sell in February?", answer: 348 },
+  { q: "Jialing has a ribbon that is 250 cm long. She uses 180 cm to wrap presents. How long is the ribbon left?", answer: 70 },
+  { q: "Bryan walked 345 m to the park and then another 528 m to the mall. How far did he walk altogether?", answer: 873 },
+  { q: "A school has 468 boys and 325 girls. How many pupils are there altogether?", answer: 793 },
+  { q: "A shop has 700 stickers. It sells 283 stickers. How many stickers are left?", answer: 417 },
+  { q: "Emma has 156 red beads and 237 blue beads. How many beads does she have in total?", answer: 393 },
+  { q: "There were 852 people at a concert on Saturday and 379 people on Sunday. How many more people came on Saturday?", answer: 473 },
+  { q: "String A is 25 cm long. String B is 63 cm long. What is the total length of the two strings?", answer: 88 },
+  { q: "John is 129 cm tall. Mark is 141 cm tall. How much taller is Mark than John?", answer: 12 },
+  { q: "Ravi walked 36 m from the bus stop to the school gate. Then he walked 105 m to the bookshop. How far did he walk altogether?", answer: 141 },
+  { q: "An aeroplane is 73 m long. It is 65 m shorter than a train. What is the length of the train?", answer: 138 },
+  { q: "Mr Singh is 180 cm tall. He is 9 cm taller than Mr Bala. How tall is Mr Bala?", answer: 171 }
+];
+
+function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = rand(0, i);
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+function savePrefs() {
+  localStorage.setItem('emmaSound', soundOn ? 'on' : 'off');
+  localStorage.setItem('emmaVoice', voiceOn ? 'on' : 'off');
+}
+function saveProgress() {
+  localStorage.setItem('emmaBestScore', String(bestScore));
+  localStorage.setItem('emmaCoins', String(bestCoins));
+  localStorage.setItem('emmaMistakes', JSON.stringify(adaptiveMistakes));
+}
+function updateStory() {
+  document.getElementById('storyLine').textContent = `${storyMap[difficulty].title} — help Emma the Math Bunny collect stars and beat the boss question!`;
+  document.getElementById('levelHint').textContent = storyMap[difficulty].hint;
+}
+function updateHUD() {
+  document.getElementById('scoreDisplay').textContent = score;
+  document.getElementById('qNumDisplay').textContent = `Q ${Math.min(qNum + 1, totalQ)}`;
+  document.getElementById('livesDisplay').textContent = lives > 0 ? '❤️'.repeat(lives) : '💔';
+  document.getElementById('bestScoreDisplay').textContent = bestScore;
+  document.getElementById('coinDisplay').textContent = bestCoins + coins;
+  document.getElementById('progressFill').style.width = (qNum / totalQ * 100) + '%';
+  const sb = document.getElementById('streakBadge');
+  if (streak >= 2) {
+    sb.style.display = 'block';
+    document.getElementById('streakCount').textContent = streak;
+  } else {
+    sb.style.display = 'none';
+  }
+}
+function speak(text) {
+  if (!voiceOn || !window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.rate = 0.92;
+  u.pitch = 1.15;
+  const voices = speechSynthesis.getVoices();
+  const softVoice = voices.find(v => /Samantha|Karen|Google UK English Female|Microsoft Zira|Ting-Ting/i.test(v.name));
+  if (softVoice) u.voice = softVoice;
+  speechSynthesis.speak(u);
+}
+function beep(type='correct') {
+  if (!soundOn) return;
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if (!AudioCtx) return;
+  const ctx = new AudioCtx();
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.connect(g);
+  g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(520, ctx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(760, ctx.currentTime + 0.12);
+    g.gain.setValueAtTime(0.001, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.12, ctx.currentTime + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.22);
+    o.start();
+    o.stop(ctx.currentTime + 0.23);
+  } else if (type === 'wrong') {
+    o.type = 'square';
+    o.frequency.setValueAtTime(260, ctx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(150, ctx.currentTime + 0.22);
+    g.gain.setValueAtTime(0.001, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.08, ctx.currentTime + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.24);
+    o.start();
+    o.stop(ctx.currentTime + 0.25);
+  } else {
+    o.type = 'triangle';
+    o.frequency.setValueAtTime(440, ctx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.1);
+    g.gain.setValueAtTime(0.001, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.11, ctx.currentTime + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.36);
+    o.start();
+    o.stop(ctx.currentTime + 0.36);
+  }
+}
+
+function getRange(type) {
+  const ranges = {
+    easy: {
+      addition: [[10, 50], [1, 20]],
+      subtraction: [[20, 70], [1, 25]],
+      compare: [10, 99],
+      patternStepSmall: [1, 5],
+      patternStepBig: [10, 20],
+      patternStart: [20, 150],
+      evenodd: [10, 99]
+    },
+    normal: {
+      addition: [[100, 400], [10, 99]],
+      subtraction: [[100, 500], [10, 200]],
+      compare: [100, 999],
+      patternStepSmall: [2, 10],
+      patternStepBig: [20, 50],
+      patternStart: [100, 500],
+      evenodd: [100, 999]
+    },
+    hard: {
+      addition: [[200, 799], [100, 350]],
+      subtraction: [[300, 900], [100, 450]],
+      compare: [200, 999],
+      patternStepSmall: [5, 20],
+      patternStepBig: [50, 100],
+      patternStart: [200, 800],
+      evenodd: [100, 999]
+    }
+  };
+  return ranges[difficulty][type];
+}
+
+function genAddition() {
+  let a, b;
+  const [r1, r2] = getRange('addition');
+  a = rand(r1[0], r1[1]);
+  b = rand(r2[0], r2[1]);
+  if (difficulty === 'hard') while (a + b > 999) b = rand(r2[0], r2[1]);
+  if (difficulty === 'easy') while (a + b > 99) b = rand(r2[0], r2[1]);
+  return { type: 'addition', a, b, answer: a + b, spoken: `What is ${a} plus ${b}?` };
+}
+function genSubtraction() {
+  let a, b;
+  const [r1, r2] = getRange('subtraction');
+  a = rand(r1[0], r1[1]);
+  b = rand(r2[0], r2[1]);
+  while (b >= a) b = rand(r2[0], Math.max(r2[0], a - 1));
+  return { type: 'subtraction', a, b, answer: a - b, spoken: `What is ${a} minus ${b}?` };
+}
+function genCompare() {
+  const [min, max] = getRange('compare');
+  let a, b;
+  do { a = rand(min, max); b = rand(min, max); } while (a === b);
+  return { type: 'compare', a, b, answer: a < b ? '<' : '>', spoken: `Which symbol is correct? ${a} or ${b}` };
+}
+function genPattern() {
+  const startRange = getRange('patternStart');
+  const small = getRange('patternStepSmall');
+  const big = getRange('patternStepBig');
+  const useBig = rand(0,1) === 1;
+  const step = useBig ? rand(big[0], big[1]) : rand(small[0], small[1]);
+  const dir = rand(0,1) === 1 ? 1 : -1;
+  let start = rand(startRange[0], startRange[1]);
+  // If going down, ensure start is big enough that all values stay positive
+  const length = 6;
+  if (dir === -1) start = Math.max(start, step * (length + 1));
+  const seq = [];
+  for (let i = 0; i < length; i++) seq.push(start + dir * step * i);
+  const blankIdx = rand(1, length - 2);
+  return {
+    type: 'patterns',
+    seq,
+    display: seq.map((n, i) => i === blankIdx ? null : n),
+    answer: seq[blankIdx],
+    spoken: "Find the missing number in the pattern."
+  };
+}
+function genEvenOdd() {
+  const [min, max] = getRange('evenodd');
+  const nums = [];
+  while (nums.length < 6) {
+    const n = rand(min, max);
+    if (!nums.includes(n)) nums.push(n);
+  }
+  const task = rand(0,1) === 0 ? 'even' : 'odd';
+  return {
+    type: 'evenodd',
+    nums,
+    task,
+    answers: nums.filter(n => task === 'even' ? n % 2 === 0 : n % 2 !== 0),
+    spoken: `Tap all the ${task} numbers.`
+  };
+}
+function genWordProblem() {
+  const wp = wordProblemsBase[rand(0, wordProblemsBase.length - 1)];
+  return { type: 'wordproblem', ...wp, spoken: wp.q };
+}
+
+// Length question types: compare (longer/shorter/taller), difference, ordering
+const lengthObjects = {
+  easy: [
+    { name: 'rope', unit: 'cm' }, { name: 'pencil', unit: 'cm' },
+    { name: 'ribbon', unit: 'cm' }, { name: 'straw', unit: 'cm' },
+    { name: 'ruler', unit: 'cm' }
+  ],
+  normal: [
+    { name: 'table', unit: 'cm' }, { name: 'shelf', unit: 'cm' },
+    { name: 'fence', unit: 'm' }, { name: 'garden', unit: 'm' },
+    { name: 'hallway', unit: 'm' }
+  ],
+  hard: [
+    { name: 'road', unit: 'm' }, { name: 'bridge', unit: 'm' },
+    { name: 'swimming pool', unit: 'm' }, { name: 'running track', unit: 'm' }
+  ]
+};
+const animals = ['elephant','giraffe','ostrich','crocodile','flamingo','penguin'];
+const vehicles = ['fire truck','bus','ambulance','bicycle','lorry','van'];
+
+function genLength() {
+  const subtype = rand(0, 2);
+  if (subtype === 0) return genLengthCompare();
+  if (subtype === 1) return genLengthDifference();
+  return genLengthOrder();
+}
+
+function genLengthCompare() {
+  // "A is X cm. B is Y cm. How much longer is A than B?"
+  const objs = difficulty === 'easy' ? lengthObjects.easy
+    : difficulty === 'normal' ? lengthObjects.normal : lengthObjects.hard;
+  const o1 = objs[rand(0, objs.length-1)];
+  let o2 = objs[rand(0, objs.length-1)];
+  while (o2.name === o1.name) o2 = objs[rand(0, objs.length-1)];
+  const range = difficulty === 'easy' ? [10,99] : difficulty === 'normal' ? [50,200] : [100,500];
+  const len1 = rand(range[0], range[1]);
+  let len2 = rand(range[0], range[1]);
+  while (len2 === len1) len2 = rand(range[0], range[1]);
+  const longer = len1 > len2 ? o1 : o2;
+  const shorter = len1 > len2 ? o2 : o1;
+  const longLen = Math.max(len1, len2);
+  const shortLen = Math.min(len1, len2);
+  const diff = longLen - shortLen;
+  const q = `The ${o1.name} is ${len1} ${o1.unit} long. The ${o2.name} is ${len2} ${o2.unit} long. How much longer is the ${longer.name} than the ${shorter.name}?`;
+  return { type: 'length', answer: diff, spoken: q, q, unit: o1.unit };
+}
+
+function genLengthDifference() {
+  // "A is X cm. B is Y cm shorter than A. How long is B?"
+  const range = difficulty === 'easy' ? [30,90] : difficulty === 'normal' ? [80,200] : [150,500];
+  const total = rand(range[0], range[1]);
+  const diff = rand(5, Math.floor(total * 0.6));
+  const shorter = total - diff;
+  const unit = difficulty === 'easy' ? 'cm' : rand(0,1) ? 'cm' : 'm';
+  const pool = [...animals, ...vehicles];
+  const nameA = pool[rand(0, pool.length-1)];
+  let nameB = pool[rand(0, pool.length-1)];
+  while (nameB === nameA) nameB = pool[rand(0, pool.length-1)];
+  const q = `The ${nameA} is ${total} ${unit} tall. The ${nameB} is ${diff} ${unit} shorter. How tall is the ${nameB}?`;
+  return { type: 'length', answer: shorter, spoken: q, q, unit };
+}
+
+function genLengthOrder() {
+  // Order 3 items from shortest to longest — MCQ showing correct ordering
+  const pool = [...animals, ...vehicles];
+  shuffle(pool);
+  const names = pool.slice(0,3);
+  const unit = difficulty === 'easy' ? 'cm' : 'm';
+  const range = difficulty === 'easy' ? [10,90] : [5,20];
+  let vals = [];
+  while (vals.length < 3) {
+    const v = rand(range[0], range[1]);
+    if (!vals.includes(v)) vals.push(v);
+  }
+  const items = names.map((n,i) => ({ name: n, val: vals[i] }));
+  const sorted = [...items].sort((a,b) => a.val - b.val);
+  const correctOrder = sorted.map(i => `${i.name} (${i.val} ${unit})`).join(' → ');
+  // Build MCQ: 3 wrong orders + 1 correct
+  const wrong1 = [...items].sort((a,b) => b.val - a.val).map(i => `${i.name} (${i.val} ${unit})`).join(' → ');
+  const shuffled = shuffle([...items]);
+  const wrong2 = shuffled.map(i => `${i.name} (${i.val} ${unit})`).join(' → ');
+  let wrong3items = shuffle([...items]);
+  while (wrong3items.map(i=>i.name).join() === sorted.map(i=>i.name).join() ||
+         wrong3items.map(i=>i.name).join() === [...items].sort((a,b)=>b.val-a.val).map(i=>i.name).join()) {
+    wrong3items = shuffle([...items]);
+  }
+  const wrong3 = wrong3items.map(i => `${i.name} (${i.val} ${unit})`).join(' → ');
+  const q = `Arrange from shortest to longest:\n${items.map(i => `${i.name}: ${i.val} ${unit}`).join(', ')}`;
+  return {
+    type: 'length',
+    subtype: 'order',
+    answer: correctOrder,
+    options: shuffle([correctOrder, wrong1, wrong2, wrong3]),
+    spoken: q, q, unit,
+    items
+  };
+}
+function genBossQuestion() {
+  const pool = ['addition','subtraction','compare','patterns','wordproblem','length'];
+  const chosen = pool[rand(0, pool.length - 1)];
+  const q = chosen === 'addition' ? genAddition()
+    : chosen === 'subtraction' ? genSubtraction()
+    : chosen === 'compare' ? genCompare()
+    : chosen === 'patterns' ? genPattern()
+    : chosen === 'length' ? genLength()
+    : genWordProblem();
+  q.boss = true;
+  return q;
+}
+function pickAdaptiveMode() {
+  const baseModes = ['addition','subtraction','compare','patterns','evenodd','wordproblem','length'];
+  const weights = {};
+  let total = 0;
+  baseModes.forEach(m => {
+    weights[m] = 1 + (adaptiveMistakes[m] || 0) * 0.6;
+    total += weights[m];
+  });
+  let roll = Math.random() * total;
+  for (const m of baseModes) {
+    roll -= weights[m];
+    if (roll <= 0) return m;
+  }
+  return 'addition';
+}
+function genQuestion() {
+  if (bossRound) return genBossQuestion();
+  const activeMode = mode === 'mixed' ? pickAdaptiveMode() : mode;
+  if (activeMode === 'addition') return genAddition();
+  if (activeMode === 'subtraction') return genSubtraction();
+  if (activeMode === 'compare') return genCompare();
+  if (activeMode === 'patterns') return genPattern();
+  if (activeMode === 'evenodd') return genEvenOdd();
+  if (activeMode === 'length') return genLength();
+  return genWordProblem();
+}
+function resetGame() {
+  score = 0;
+  qNum = 0;
+  streak = 0;
+  lives = 3;
+  coins = 0;
+  answered = false;
+  bossRound = false;
+  updateStory();
+  updateHUD();
+  nextQuestion();
+}
+function nextQuestion() {
+  if (qNum >= totalQ) { showEndScreen(); return; }
+  answered = false;
+  bossRound = (qNum === totalQ - 1);
+  currentQuestion = genQuestion();
+  renderQuestion(currentQuestion);
+  updateHUD();
+  if (currentQuestion.spoken) setTimeout(() => speak(currentQuestion.spoken), 250);
+}
+function animateCard() {
+  const card = document.getElementById('gameCard');
+  card.style.animation = 'none';
+  card.offsetHeight;
+  card.style.animation = 'slideIn 0.35s cubic-bezier(.34,1.56,.64,1)';
+  card.innerHTML = '';
+  return card;
+}
+function createSpeakButton(text) {
+  const btn = document.createElement('button');
+  btn.className = 'speak-btn';
+  btn.textContent = '🔊 Read Question';
+  btn.onclick = () => speak(text);
+  return btn;
+}
+function renderQuestion(q) {
+  const card = animateCard();
+  if (q.boss) {
+    const chip = document.createElement('div');
+    chip.className = 'boss-chip';
+    chip.textContent = '👾 Boss Question! Double coins if you get this right!';
+    card.appendChild(chip);
+  }
+  if (q.type === 'addition' || q.type === 'subtraction') renderColumnSum(q, card);
+  else if (q.type === 'compare') renderCompare(q, card);
+  else if (q.type === 'patterns') renderPattern(q, card);
+  else if (q.type === 'evenodd') renderEvenOdd(q, card);
+  else if (q.type === 'length') renderLength(q, card);
+  else if (q.type === 'wordproblem') renderWordProblem(q, card);
+}
+function renderColumnSum(q, card) {
+  const label = document.createElement('div');
+  label.className = 'question-label';
+  label.textContent = q.type === 'addition' ? '➕ Solve the sum!' : '➖ Solve the subtraction!';
+  card.appendChild(label);
+
+  const text = document.createElement('div');
+  text.className = 'question-text';
+  text.textContent = q.boss ? 'Beat the boss with your best math!' : 'Line up the place values and choose the answer.';
+  card.appendChild(text);
+  card.appendChild(createSpeakButton(q.spoken));
+
+  const op = q.type === 'addition' ? '+' : '−';
+  const aStr = String(q.a);
+  const bStr = String(q.b);
+  const maxLen = Math.max(aStr.length, bStr.length);
+  const headers = ['Hundreds','Tens','Ones'].slice(3 - maxLen);
+
+  const colDiv = document.createElement('div');
+  colDiv.className = 'column-sum';
+
+  const hRow = document.createElement('div');
+  hRow.className = 'col-header';
+  headers.forEach(h => {
+    const s = document.createElement('span');
+    s.textContent = h;
+    hRow.appendChild(s);
+  });
+  colDiv.appendChild(hRow);
+
+  const rowA = document.createElement('div');
+  rowA.className = 'col-row';
+  [...aStr.padStart(maxLen,' ')].forEach(d => {
+    const span = document.createElement('span');
+    span.className = 'col-digit';
+    span.textContent = d === ' ' ? '' : d;
+    rowA.appendChild(span);
+  });
+  colDiv.appendChild(rowA);
+
+  const rowOp = document.createElement('div');
+  rowOp.className = 'col-row operator-row';
+  const opSpan = document.createElement('span');
+  opSpan.style.marginRight = '4px';
+  opSpan.textContent = op;
+  rowOp.appendChild(opSpan);
+  [...bStr.padStart(maxLen,' ')].forEach(d => {
+    const span = document.createElement('span');
+    span.className = 'col-digit';
+    span.textContent = d === ' ' ? '' : d;
+    rowOp.appendChild(span);
+  });
+  colDiv.appendChild(rowOp);
+
+  const hr = document.createElement('hr');
+  hr.className = 'col-divider';
+  colDiv.appendChild(hr);
+  card.appendChild(colDiv);
+
+  const max = difficulty === 'easy' ? 100 : 999;
+  renderMCQ(generateOptions(q.answer, 3, 0, max), q.answer, q.type, card);
+}
+function generateOptions(correct, n, min, max) {
+  const opts = new Set([correct]);
+  while (opts.size < n + 1) {
+    const delta = [-rand(1,20), rand(1,20), -rand(1,50), rand(1,50), -rand(2,9), rand(2,9)][rand(0,5)];
+    const v = correct + delta;
+    if (v >= min && v <= max && v !== correct) opts.add(v);
+  }
+  return shuffle([...opts]);
+}
+function renderMCQ(options, correct, mistakeType, card) {
+  const grid = document.createElement('div');
+  grid.className = 'options-grid';
+  options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.textContent = opt;
+    btn.onclick = () => handleChoice(btn, opt === correct, correct, grid, mistakeType, card);
+    grid.appendChild(btn);
+  });
+  card.appendChild(grid);
+}
+function handleChoice(btn, isCorrect, correct, grid, mistakeType, card) {
+  if (answered) return;
+  answered = true;
+  if (isCorrect) {
+    btn.classList.add('correct');
+    handleCorrect(card);
+  } else {
+    btn.classList.add('wrong');
+    [...grid.querySelectorAll('.option-btn')].forEach(b => {
+      if (String(b.textContent) === String(correct)) b.classList.add('correct');
+    });
+    adaptiveMistakes[mistakeType] = (adaptiveMistakes[mistakeType] || 0) + 1;
+    saveProgress();
+    handleWrong(card);
+  }
+}
+function renderCompare(q, card) {
+  const label = document.createElement('div');
+  label.className = 'question-label';
+  label.textContent = '⚖️ Compare the numbers';
+  card.appendChild(label);
+
+  const text = document.createElement('div');
+  text.className = 'question-text';
+  text.textContent = 'Tap the correct symbol.';
+  card.appendChild(text);
+  card.appendChild(createSpeakButton(q.spoken));
+
+  const row = document.createElement('div');
+  row.className = 'compare-row';
+  row.innerHTML = `<span>${q.a}</span>`;
+  const btns = document.createElement('div');
+  btns.className = 'compare-btns';
+  ['<','>'].forEach(sym => {
+    const b = document.createElement('button');
+    b.className = 'compare-opt';
+    b.textContent = sym;
+    b.onclick = () => {
+      if (answered) return;
+      answered = true;
+      if (sym === q.answer) {
+        b.classList.add('correct');
+        handleCorrect(card);
+      } else {
+        b.classList.add('wrong');
+        [...btns.querySelectorAll('.compare-opt')].forEach(x => { if (x.textContent === q.answer) x.classList.add('correct'); });
+        adaptiveMistakes.compare++;
+        saveProgress();
+        handleWrong(card);
+      }
+    };
+    btns.appendChild(b);
+  });
+  row.appendChild(btns);
+  const right = document.createElement('span');
+  right.textContent = q.b;
+  row.appendChild(right);
+  card.appendChild(row);
+}
+function renderPattern(q, card) {
+  const label = document.createElement('div');
+  label.className = 'question-label';
+  label.textContent = '🔢 Find the pattern';
+  card.appendChild(label);
+
+  const text = document.createElement('div');
+  text.className = 'question-text';
+  text.textContent = 'What number is missing?';
+  card.appendChild(text);
+  card.appendChild(createSpeakButton(q.spoken));
+
+  const patRow = document.createElement('div');
+  patRow.className = 'pattern-row';
+  let inputEl = null;
+  q.display.forEach((n, i) => {
+    if (n === null) {
+      const inp = document.createElement('input');
+      inp.type = 'number';
+      inp.className = 'pattern-blank';
+      inp.placeholder = '?';
+      inp.addEventListener('keydown', e => { if (e.key === 'Enter') submitInput(); });
+      patRow.appendChild(inp);
+      inputEl = inp;
+    } else {
+      const span = document.createElement('div');
+      span.className = 'pattern-num';
+      span.textContent = n;
+      patRow.appendChild(span);
+    }
+    if (i < q.display.length - 1) {
+      const comma = document.createElement('span');
+      comma.style.cssText = 'font-size:1.3rem;color:#aaa;font-weight:800;';
+      comma.textContent = ',';
+      patRow.appendChild(comma);
+    }
+  });
+  card.appendChild(patRow);
+
+  const submitBtn = document.createElement('button');
+  submitBtn.className = 'action-btn';
+  submitBtn.textContent = 'Check! ✓';
+  submitBtn.onclick = submitInput;
+  card.appendChild(submitBtn);
+  function submitInput() {
+    if (answered || !inputEl) return;
+    const val = parseInt(inputEl.value, 10);
+    answered = true;
+    if (val === q.answer) {
+      inputEl.style.borderColor = 'var(--green)';
+      inputEl.style.background = '#d4f5de';
+      handleCorrect(card);
+    } else {
+      inputEl.style.borderColor = 'var(--coral)';
+      inputEl.style.background = '#fde8e8';
+      inputEl.value = q.answer;
+      adaptiveMistakes.patterns++;
+      saveProgress();
+      handleWrong(card);
+    }
+  }
+  setTimeout(() => inputEl && inputEl.focus(), 100);
+}
+function renderEvenOdd(q, card) {
+  const label = document.createElement('div');
+  label.className = 'question-label';
+  label.textContent = `🎯 Tap all the ${q.task.toUpperCase()} numbers`;
+  card.appendChild(label);
+
+  const text = document.createElement('div');
+  text.className = 'question-text';
+  text.textContent = q.task === 'even' ? 'Even numbers end in 0, 2, 4, 6, or 8.' : 'Odd numbers end in 1, 3, 5, 7, or 9.';
+  card.appendChild(text);
+  card.appendChild(createSpeakButton(q.spoken));
+
+  const selected = new Set();
+  const grid = document.createElement('div');
+  grid.className = 'tap-grid';
+  q.nums.forEach(n => {
+    const btn = document.createElement('button');
+    btn.className = 'tap-num';
+    btn.textContent = n;
+    btn.onclick = () => {
+      if (answered) return;
+      if (selected.has(n)) {
+        selected.delete(n);
+        btn.classList.remove('selected');
+      } else {
+        selected.add(n);
+        btn.classList.add('selected');
+      }
+    };
+    grid.appendChild(btn);
+  });
+  card.appendChild(grid);
+
+  const submitBtn = document.createElement('button');
+  submitBtn.className = 'action-btn';
+  submitBtn.textContent = 'Check! ✓';
+  submitBtn.onclick = () => {
+    if (answered) return;
+    answered = true;
+    const correct = new Set(q.answers);
+    let allRight = true;
+    grid.querySelectorAll('.tap-num').forEach(btn => {
+      const n = parseInt(btn.textContent, 10);
+      const shouldBe = correct.has(n);
+      const wasSelected = selected.has(n);
+      if (shouldBe && wasSelected) btn.classList.add('correct-selected');
+      else if (!shouldBe && wasSelected) { btn.classList.add('wrong-selected'); allRight = false; }
+      else if (shouldBe && !wasSelected) { btn.classList.add('correct-selected'); btn.style.border = '3px dashed var(--green)'; allRight = false; }
+    });
+    if (allRight && selected.size === q.answers.length) handleCorrect(card);
+    else {
+      adaptiveMistakes.evenodd++;
+      saveProgress();
+      handleWrong(card);
+    }
+  };
+  card.appendChild(submitBtn);
+}
+function renderLength(q, card) {
+  const label = document.createElement('div');
+  label.className = 'question-label';
+  label.textContent = '📏 Length Challenge!';
+  card.appendChild(label);
+
+  card.appendChild(createSpeakButton(q.spoken));
+
+  const box = document.createElement('div');
+  box.className = 'word-box';
+  box.style.whiteSpace = 'pre-line';
+  box.textContent = q.q;
+  card.appendChild(box);
+
+  if (q.subtype === 'order') {
+    // MCQ with text options showing ordering
+    const grid = document.createElement('div');
+    grid.className = 'options-grid';
+    grid.style.gridTemplateColumns = '1fr';
+    grid.style.maxWidth = '480px';
+    q.options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.style.fontSize = '0.95rem';
+      btn.style.textAlign = 'left';
+      btn.style.padding = '12px 16px';
+      btn.textContent = opt;
+      btn.onclick = () => handleChoice(btn, opt === q.answer, q.answer, grid, 'length', card);
+      grid.appendChild(btn);
+    });
+    card.appendChild(grid);
+  } else {
+    // Numeric MCQ
+    const options = generateOptions(q.answer, 3, 0, 999);
+    const grid = document.createElement('div');
+    grid.className = 'options-grid';
+    options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.textContent = `${opt} ${q.unit}`;
+      btn.onclick = () => handleChoice(btn, opt === q.answer, q.answer, grid, 'length', card);
+      grid.appendChild(btn);
+    });
+    // handleChoice matches on textContent so override to compare numbers
+    grid.querySelectorAll('.option-btn').forEach(btn => {
+      btn.onclick = () => {
+        if (answered) return;
+        const val = parseInt(btn.textContent);
+        answered = true;
+        if (val === q.answer) {
+          btn.classList.add('correct');
+          handleCorrect(card);
+        } else {
+          btn.classList.add('wrong');
+          [...grid.querySelectorAll('.option-btn')].forEach(b => {
+            if (parseInt(b.textContent) === q.answer) b.classList.add('correct');
+          });
+          adaptiveMistakes.length = (adaptiveMistakes.length || 0) + 1;
+          saveProgress();
+          handleWrong(card);
+        }
+      };
+    });
+    card.appendChild(grid);
+  }
+}
+function renderWordProblem(q, card) {
+  const label = document.createElement('div');
+  label.className = 'question-label';
+  label.textContent = '📖 Word Problem';
+  card.appendChild(label);
+
+  const text = document.createElement('div');
+  text.className = 'question-text';
+  text.textContent = q.boss ? 'Final challenge — read carefully!' : 'Read the story and choose the answer.';
+  card.appendChild(text);
+  card.appendChild(createSpeakButton(q.spoken));
+
+  const box = document.createElement('div');
+  box.className = 'word-box';
+  box.textContent = q.q;
+  card.appendChild(box);
+
+  renderMCQ(generateOptions(q.answer, 3, 0, 9999), q.answer, 'wordproblem', card);
+}
+function handleCorrect(card) {
+  const bossBonus = currentQuestion && currentQuestion.boss ? 10 : 0;
+  score += (streak >= 2 ? 15 : 10) + bossBonus;
+  const coinGain = (currentQuestion && currentQuestion.boss) ? 10 : 3;
+  coins += coinGain;
+  streak++;
+  qNum++;
+  if (bestScore < score) bestScore = score;
+  if (currentQuestion && currentQuestion.type) {
+    adaptiveMistakes[currentQuestion.type] = Math.max(0, (adaptiveMistakes[currentQuestion.type] || 0) - 0.2);
+  }
+  saveProgress();
+  updateHUD();
+  beep(currentQuestion && currentQuestion.boss ? 'win' : 'correct');
+
+  const fb = document.createElement('div');
+  fb.className = 'feedback correct';
+  const msgs = ['🌟 Brilliant!', '🎉 Amazing!', '⭐ Super!', '🏆 Excellent!', '🌈 Fantastic!', '🦄 WOW!'];
+  fb.textContent = currentQuestion && currentQuestion.boss
+    ? '👑 Boss defeated! Amazing job!'
+    : msgs[rand(0, msgs.length - 1)];
+  card.appendChild(fb);
+
+  if (streak >= 3 || (currentQuestion && currentQuestion.boss)) launchConfetti();
+  setTimeout(nextQuestion, 1400);
+}
+function handleWrong(card) {
+  lives--;
+  streak = 0;
+  qNum++;
+  saveProgress();
+  updateHUD();
+  beep('wrong');
+
+  const fb = document.createElement('div');
+  fb.className = 'feedback wrong';
+  const msgs = [
+    '😅 Not quite! You can do it!',
+    '💪 Keep going, Emma!',
+    "🤔 Almost! Let's try another!",  
+    '🌼 Good try — next one!'
+  ];
+  fb.textContent = msgs[rand(0, msgs.length - 1)];
+  card.appendChild(fb);
+
+  if (lives <= 0) { setTimeout(showEndScreen, 1500); return; }
+  setTimeout(nextQuestion, 1600);
+}
+function getStars() {
+  const accuracy = qNum === 0 ? 0 : score / (qNum * 10);
+  if (accuracy >= 1.1 || score >= 105) return '⭐⭐⭐';
+  if (accuracy >= 0.75 || score >= 70) return '⭐⭐';
+  return '⭐';
+}
+function getResultMessage() {
+  if (score >= 100) return "You're a MATH SUPERSTAR, Emma!";
+  if (score >= 70) return "Great job, Emma! You're getting so strong at math!";
+  return "Good try, Emma! Practice makes perfect!";
+}
+function showEndScreen() {
+  const card = animateCard();
+  const trophy = score >= 100 ? '🏆' : score >= 70 ? '🌟' : '⭐';
+  const stars = getStars();
+  const message = getResultMessage();
+  const accuracyPercent = qNum ? Math.round((score / (qNum * 10)) * 100) : 0;
+  if (bestScore < score) bestScore = score;
+  bestCoins += coins;
+  coins = 0;
+  saveProgress();
+  updateHUD();
+  beep('win');
+  launchConfetti();
+
+  card.innerHTML = `
+    <div class="end-screen">
+      <span class="big-star">${trophy}</span>
+      <h2>Adventure Complete!</h2>
+      <div class="stars-row">${stars}</div>
+      <p>${message}<br>Final score: <strong>${score}</strong> points<br>Math power: <strong>${accuracyPercent}%</strong><br>Total coins saved: <strong>${bestCoins}</strong></p>
+      <button class="action-btn green" onclick="resetGame()">🎮 Play Again!</button>
+    </div>
+  `;
+  document.getElementById('progressFill').style.width = '100%';
+}
+function launchConfetti() {
+  const colors = ['#c77dff','#ff6b9d','#ffd93d','#6bcb77','#4d96ff','#ff6b6b'];
+  for (let i = 0; i < 40; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti-piece';
+    c.style.left = rand(0, 100) + 'vw';
+    c.style.background = colors[rand(0, colors.length - 1)];
+    c.style.width = rand(8, 14) + 'px';
+    c.style.height = rand(10, 18) + 'px';
+    c.style.animationDuration = rand(2, 4) + 's';
+    c.style.animationDelay = rand(0, 1500) + 'ms';
+    c.style.borderRadius = rand(0,1) ? '50%' : '2px';
+    document.body.appendChild(c);
+    c.addEventListener('animationend', () => c.remove());
+  }
+}
+
+document.querySelectorAll('.mode-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    mode = btn.dataset.mode;
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    resetGame();
+  });
+});
+document.querySelectorAll('#difficultyRow .mini-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    difficulty = btn.dataset.difficulty;
+    document.querySelectorAll('#difficultyRow .mini-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    resetGame();
+  });
+});
+document.getElementById('soundToggle').addEventListener('click', e => {
+  soundOn = !soundOn;
+  e.target.textContent = soundOn ? '🔊 Sound On' : '🔇 Sound Off';
+  e.target.classList.toggle('active', soundOn);
+  savePrefs();
+});
+document.getElementById('voiceToggle').addEventListener('click', e => {
+  voiceOn = !voiceOn;
+  e.target.textContent = voiceOn ? '🗣️ Voice On' : '🤫 Voice Off';
+  e.target.classList.toggle('active', voiceOn);
+  savePrefs();
+  if (!voiceOn && window.speechSynthesis) speechSynthesis.cancel();
+});
+
+function initButtons() {
+  document.getElementById('soundToggle').textContent = soundOn ? '🔊 Sound On' : '🔇 Sound Off';
+  document.getElementById('soundToggle').classList.toggle('active', soundOn);
+  document.getElementById('voiceToggle').textContent = voiceOn ? '🗣️ Voice On' : '🤫 Voice Off';
+  document.getElementById('voiceToggle').classList.toggle('active', voiceOn);
+}
+// Warm up voice list - it loads async on first call
+if (window.speechSynthesis) {
+  speechSynthesis.getVoices();
+  speechSynthesis.addEventListener('voiceschanged', () => speechSynthesis.getVoices());
+}
+initButtons();
+updateStory();
+updateHUD();
+resetGame();
+</script>
+
+</body>
+</html>
